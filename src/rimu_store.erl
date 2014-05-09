@@ -43,6 +43,7 @@
         ]).
 
 %%%_* Includes =========================================================
+-include_lib("n2o/include/wf.hrl").
 -include("rimu.hrl").
 
 -include_lib("tulib/include/logging.hrl").
@@ -58,10 +59,10 @@ get(Key, Opts)                   -> do_get(virtualize(Key), Opts).
 put(Key, Val)                    -> put(Key, Val, []).
 put(Key, Val, Opts)              -> do_put(virtualize(Key), Val, Opts).
 
-virtualize([NS, B, K])           -> [tulib_atoms:catenate([NS, '_', B]), K];
-virtualize([NS, B, I, IK])       -> [tulib_atoms:catenate([NS, '_', B]), I, IK];
-virtualize([NS, B, K, I, IK])    -> [tulib_atoms:catenate([NS, '_', B]), K, I, IK].
-virtualize(NS, B)                -> tulib_atoms:catenate([NS, '_', B]).
+virtualize([NS, B, K])           -> [{wf:to_binary(NS), wf:to_binary(B)}, K];
+virtualize([NS, B, I, IK])       -> [{wf:to_binary(NS), wf:to_binary(B)}, I, IK];
+virtualize([NS, B, K, I, IK])    -> [{wf:to_binary(NS), wf:to_binary(B)}, K, I, IK].
+virtualize(NS, B)                -> {wf:to_binary(NS), wf:to_binary(B)}.
 
 %% Primitives.
 %% Note the asymmetry of index operations: we read a set of objects from
@@ -83,7 +84,6 @@ do_put([_, _, I, IK], Obj, Opts) -> krc:put_index(?KRC,
 
 resolver(Opts)                   -> tulib_lists:assoc(resolver, Opts, merge()).
 indices(Opts)                    -> tulib_lists:assoc(indices, Opts, []).
-
 %% Representation.
 bind([_, _, _],    O)            -> {krc_obj:val(O), O};
 bind([_, _, _, _], Os)           -> {[krc_obj:val(O) || O <- Os], index_read}.
