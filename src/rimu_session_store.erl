@@ -38,6 +38,8 @@
         , return/3
         ]).
 
+-export([ search/2]).
+
 %%%_* Includes =========================================================
 -include("rimu.hrl").
 
@@ -94,6 +96,8 @@ merge(_, V1, V2)                   -> (meshup_resolver:to_fun(
                                            [ rimu_resolver_tombstone
                                            , rimu_resolver_session
                                            ])))(V1, V2).
+
+search(_, _)                      -> throw(nyi).
 
 %%%_* Tests ============================================================
 -ifdef(TEST).
