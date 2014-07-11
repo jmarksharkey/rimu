@@ -49,6 +49,7 @@
         , bind/2
         , return/2
         , return/3
+        , search/2
         ]).
 
 %% gen_server callbacks
@@ -102,6 +103,8 @@ put(Key, dec, _)      -> _ = dec(Key), ok.
 bind(_Key, Val)       -> {Val, ''}.
 return(_Key, Val)     -> Val.
 return(_Key, Val, '') -> Val.
+
+search(_, _)          -> nyi.
 
 merge(_Key, V1, V2)   -> {ok, [V1, V2]}.
 

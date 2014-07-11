@@ -38,6 +38,11 @@
         , transaction/4
         ]).
 
+-export([
+          search/2
+        ]).
+
+
 -export([ start_link/0
         , stop/0
         ]).
@@ -68,6 +73,8 @@ delete(K, Opts)           -> meshup_store:del(rimu_store, K, Opts).
 transaction(F, RS, WS)    -> transaction(F, RS, WS, async).
 transaction(F, RS, WS, M) -> meshup_txn:txn(F, annotate(RS), annotate(WS), M).
 annotate(Xs)              -> [{X, [{store, rimu_store}]} || X <- Xs].
+
+search(I, Q)              -> meshup_store:search(rimu_store, I, Q).
 
 %%%_* Tests ============================================================
 -ifdef(TEST).

@@ -38,8 +38,12 @@
         , return/3
         ]).
 
+-export([
+        search/2
+]).
+
 -export([ virtualize/1
-        , virtualize/2
+        , virtualize/3
         ]).
 
 %%%_* Includes =========================================================
@@ -59,10 +63,13 @@ get(Key, Opts)                   -> do_get(virtualize(Key), Opts).
 put(Key, Val)                    -> put(Key, Val, []).
 put(Key, Val, Opts)              -> do_put(virtualize(Key), Val, Opts).
 
-virtualize([NS, B, K])           -> [{wf:to_binary(NS), wf:to_binary(B)}, K];
-virtualize([NS, B, I, IK])       -> [{wf:to_binary(NS), wf:to_binary(B)}, I, IK];
-virtualize([NS, B, K, I, IK])    -> [{wf:to_binary(NS), wf:to_binary(B)}, K, I, IK].
-virtualize(NS, B)                -> {wf:to_binary(NS), wf:to_binary(B)}.
+search(I, Q)                    -> do_search(I, Q).
+
+virtualize([{T, B}, K])              -> [{wf:to_binary(T), wf:to_binary(B)}, K];
+virtualize([_NS, T, B, K])           -> [{wf:to_binary(T), wf:to_binary(B)}, K];
+virtualize([_NS, T, B, I, IK])       -> [{wf:to_binary(T), wf:to_binary(B)}, I, IK];
+virtualize([_NS, T, B, K, I, IK])    -> [{wf:to_binary(T), wf:to_binary(B)}, K, I, IK].
+virtualize(_NS, T, B)                -> {wf:to_binary(T), wf:to_binary(B)}.
 
 %% Primitives.
 %% Note the asymmetry of index operations: we read a set of objects from
@@ -82,14 +89,17 @@ do_put([_, _, I, IK], Obj, Opts) -> krc:put_index(?KRC,
                                                   Obj,
                                                   indices(Opts) ++ [{I, IK}]).
 
+do_search(I, Q)                  -> krc:search(?KRC, I, Q).
+
 resolver(Opts)                   -> tulib_lists:assoc(resolver, Opts, merge()).
 indices(Opts)                    -> tulib_lists:assoc(indices, Opts, []).
 %% Representation.
-bind([_, _, _],    O)            -> {krc_obj:val(O), O};
-bind([_, _, _, _], Os)           -> {[krc_obj:val(O) || O <- Os], index_read}.
+bind([_, _], O)                     -> {krc_obj:val(O), O};
+bind([_, _, _, _],    O)            -> {krc_obj:val(O), O};
+bind([_, _, _, _, _], Os)           -> {[krc_obj:val(O) || O <- Os], index_read}.
 
-return([NS, B, K],       V)      -> krc_obj:new(virtualize(NS, B), K, V);
-return([NS, B, K, _, _], V)      -> krc_obj:new(virtualize(NS, B), K, V).
+return([NS, T, B, K],       V)      -> krc_obj:new(virtualize(NS, T, B), K, V);
+return([NS, T, B, K, _, _], V)      -> krc_obj:new(virtualize(NS, T, B), K, V).
 return([_, _, _], V, O)          -> krc_obj:set_val(O, V).
 
 %% Conflicts (no resolution).
