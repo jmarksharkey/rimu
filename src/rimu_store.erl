@@ -71,6 +71,7 @@ put(Key, Val, Opts)              -> do_put(virtualize(Key), Val, Opts).
 search(I, Q)                    -> do_search(I, Q).
 
 virtualize([{T, B}, K])              -> [{wf:to_binary(T), wf:to_binary(B)}, K];
+%% virtualize([_NS, {T, B}, K])         -> [{wf:to_binary(T), wf:to_binary(B)}, K];
 virtualize([_NS, T, B, K])           -> [{wf:to_binary(T), wf:to_binary(B)}, K];
 virtualize([_NS, T, B, I, IK])       -> [{wf:to_binary(T), wf:to_binary(B)}, I, IK];
 virtualize([_NS, T, B, K, I, IK])    -> [{wf:to_binary(T), wf:to_binary(B)}, K, I, IK].
@@ -89,7 +90,7 @@ do_get([B, I, K], Opts)          -> krc:get_index(?KRC,
                                                   K,
                                                   resolver(Opts)).
 
-do_fetch([B, K],    Opts)          -> krc:fetch(?KRC, B, K, resolver(Opts)).
+do_fetch([B, K],    Opts)        -> krc:fetch(?KRC, B, K, resolver(Opts)).
 
 do_put([_, _],        Obj, Opts) -> krc:put_index(?KRC, Obj, indices(Opts));
 do_put([_, _, I, IK], Obj, Opts) -> krc:put_index(?KRC,
