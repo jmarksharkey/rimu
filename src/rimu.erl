@@ -28,6 +28,8 @@
         , create/3
         , read/1
         , read/2
+        , fetch/1
+        , fetch/2
         , update/2
         , update/3
         , delete/1
@@ -63,6 +65,9 @@ create(_K, _V, _Opts)     -> throw(nyi).
 
 read(K)                   -> read(K, []).
 read(K, Opts)             -> meshup_store:get_(rimu_store, K, Opts).
+
+fetch(K)                  -> fetch(K, []).
+fetch(K, Opts)            -> meshup_store:fetch_(rimu_store, K, Opts).
 
 update(K, F)              -> update(K, F, []).
 update(K, F, Opts)        -> meshup_store:patch_(rimu_store, K, F, Opts).

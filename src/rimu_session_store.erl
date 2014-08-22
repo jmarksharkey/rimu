@@ -77,10 +77,10 @@ put(Key, Val, Opts)                -> throw({error, {put, Key, Val, Opts}}).
 %% Primitives.
 do_del(B, K)                       -> krc:delete(?KRC, B, K).
 
-do_get(B)                          -> krc:get_index(?KRC, B, B, '_', merge()).
-do_get(B, K)                       -> krc:get(?KRC, B, K, merge()).
+do_get(B)                          -> krc:get_index(?KRC, wf:to_binary(B), wf:to_binary(B), '_', merge()).
+do_get(B, K)                       -> krc:get(?KRC, wf:to_binary(B), wf:to_binary(K), merge()).
 
-do_put(B, _K, Obj)                 -> krc:put_index(?KRC, Obj, [{B, '_'}]).
+do_put(B, _K, Obj)                 -> krc:put_index(?KRC, Obj, [{wf:to_binary(B), '_'}]).
 
 %% Representation.
 bind(K, Objs) when is_atom(K)      -> {[krc_obj:val(Obj) || Obj <- Objs], ''};

@@ -30,6 +30,8 @@
         , del/2
         , get/1
         , get/2
+        , fetch/1
+        , fetch/2
         , merge/3
         , put/2
         , put/3
@@ -60,6 +62,9 @@ del(Key, Opts)                   -> do_del(virtualize(Key), Opts).
 get(Key)                         -> get(Key, []).
 get(Key, Opts)                   -> do_get(virtualize(Key), Opts).
 
+fetch(Key)                       -> fetch(Key, []).
+fetch(Key, Opts)                 -> do_fetch(virtualize(Key), Opts).
+
 put(Key, Val)                    -> put(Key, Val, []).
 put(Key, Val, Opts)              -> do_put(virtualize(Key), Val, Opts).
 
@@ -83,6 +88,8 @@ do_get([B, I, K], Opts)          -> krc:get_index(?KRC,
                                                   I,
                                                   K,
                                                   resolver(Opts)).
+
+do_fetch([B, K],    Opts)          -> krc:fetch(?KRC, B, K, resolver(Opts)).
 
 do_put([_, _],        Obj, Opts) -> krc:put_index(?KRC, Obj, indices(Opts));
 do_put([_, _, I, IK], Obj, Opts) -> krc:put_index(?KRC,
