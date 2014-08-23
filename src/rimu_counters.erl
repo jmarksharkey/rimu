@@ -43,6 +43,8 @@
         , del/2
         , get/1
         , get/2
+        , fetch/1
+        , fetch/2
         , merge/3
         , put/2
         , put/3
@@ -104,6 +106,8 @@ bind(_Key, Val)       -> {Val, ''}.
 return(_Key, Val)     -> Val.
 return(_Key, Val, '') -> Val.
 
+fetch(_)              -> nyi.
+fetch(_, _)           -> nyi.
 search(_, _)          -> nyi.
 
 merge(_Key, V1, V2)   -> {ok, [V1, V2]}.

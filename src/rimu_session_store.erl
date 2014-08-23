@@ -30,6 +30,8 @@
         , del/2
         , get/1
         , get/2
+        , fetch/1
+        , fetch/2
         , merge/3
         , put/2
         , put/3
@@ -97,6 +99,8 @@ merge(_, V1, V2)                   -> (meshup_resolver:to_fun(
                                            , rimu_resolver_session
                                            ])))(V1, V2).
 
+fetch(_)                          -> throw(nyi).
+fetch(_, _)                       -> throw(nyi).
 search(_, _)                      -> throw(nyi).
 
 %%%_* Tests ============================================================
